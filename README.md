@@ -10,4 +10,4 @@ SPECTRE: Supersonic Phase-change Ejector Cycle for Thermal Refrigeration Efficie
 * Bennet Outland
 
 ## Results
-This project is currently a work in progress. Results will completed soon.
+This project is currently a work in progress. Results will be completed soon.

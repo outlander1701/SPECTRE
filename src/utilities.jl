@@ -76,7 +76,10 @@ function find_state(Gas; P::Float64=-1.0, T::Float64=-1.0, h::Float64=-1.0, s::F
                 break
             end
         end
-        h_f = Gas[""]
+        h_f = Gas["Enthalpy (l, kJ/kg)"][search_index]
+        h_fg = Gas["Enthalpy (v, kJ/kg)"][search_index]
+        s_f = Gas["Entropy (l, J/g*K)"][search_index]
+        s_fg = Gas["Entropy (v, J/g*K)"][search_index]
     end
 
 end

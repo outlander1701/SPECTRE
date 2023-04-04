@@ -173,10 +173,10 @@ function Sat_State(P, Gas)
         end
     end
 
-    h_f = Gas["Enthalpy (l, kJ/kg)"][i];
-    h_fg = Gas["Enthalpy (v, kJ/kg)"][i];
-    s_f = Gas["Entropy (l, J/g*K)"][i];
-    s_fg = Gas["Entropy (v, J/g*K)"][i];
+    h_f = Gas["Enthalpy (l, kJ/kg)"][n];
+    h_fg = Gas["Enthalpy (v, kJ/kg)"][n];
+    s_f = Gas["Entropy (l, J/g*K)"][n];
+    s_fg = Gas["Entropy (v, J/g*K)"][n];
 
     return h_f, h_fg, s_f, s_fg
 end

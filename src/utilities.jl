@@ -102,11 +102,34 @@ function Diffuser_Enthalpy(x, v_2i, v_2o, h_2i, h_2o)
     return h_4
 end
 
-function Quality_Search(h_9, h_2i, h_1, h_2o, h_f, h_fg, s_f, s_fg)
+function Sat_State(P, Gas)
+
+    n = 0;
+    N = length(Gas["Pressure (MPa)"])
+
+    for i ∈ 1:N
+        ϵ = abs(P - Gas["Pressure (MPa)"][i])
+        if (ϵ < 0.0005)
+            n = i;
+            break
+        end
+    end
+
+    h_f = Gas["Enthalpy (l, kJ/kg)"][i];
+    h_fg = Gas["Enthalpy (v, kJ/kg)"][i];
+    s_f = Gas["Entropy (l, J/g*K)"][i];
+    s_fg = Gas["Entropy (v, J/g*K)"][i];
+
+    return h_f, h_fg, s_f, s_fg
+end
+
+function Quality_Search(h_9, h_2i, h_1, h_2o, P, Gas)
     
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))
-    
+
+    h_f, h_fg, s_f, s_fg = Sat_State(P, Gas)
+
     x = 0:0.01:1;
     N = length(x);
 

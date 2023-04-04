@@ -81,6 +81,7 @@ function create_state(Gas; P::Float64=0.0, T::Float64=0.0, 𝓋::Float64=0.0, h:
 end
 end
 
+
 mutable struct State
     """
     Units: K, Pa, m3/kg, kJ/kg, kJ/kg*K

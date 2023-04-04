@@ -1,9 +1,15 @@
 include("utilities.jl")
 
-function throttle(State)
+function throttle(State, Gas, sys_params)
     """
+    Isoenthalpic throttle
     """
     h = State.h
+    T = sys_params["Temp"]
+
+    
+
+
 
     return 42
 end

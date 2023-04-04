@@ -1,5 +1,8 @@
 using Plots
 
+include("./csv_injest.jl")
+
+
 # Constants
 T_L = -15 # C
 T_H = 25 # C

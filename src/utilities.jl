@@ -184,6 +184,7 @@ function create_state(Gas, State_prev; P::Float64=0.0, T::Float64=0.0, 𝓋::Flo
     end 
 
 end
+end
 
 mutable struct State
     """
@@ -195,4 +196,33 @@ mutable struct State
     𝓋::Float64
     h::Float64
     s::Float64
+end
+
+function Diffuser_Enthalpy(x, v_2i, v_2o, h_2i, h_2o)
+    v_3 = x*v_2i + (1-x)*v_2o
+    h_3 = x*(h_2i + .5*(v_2i^2)) + (1-x)*(h_2o + .5*(v_2o^2)) + .5*v_3^2
+    h_4 = h_3 + .5*(v_3^2)
+    return h_4
+end
+
+function Quality_Search(h_9, h_2i, h_1, h_2o, h_f, h_fg, s_f, s_fg)
+    
+    v_2i = sqrt(2*(h_9 - h_2i))
+    v_2o = sqrt(2*(h_1 - h_2o))
+    
+    x = 0:0.01:1;
+    N = length(x);
+
+    ϵ = 0.1;
+    
+    for i ∈ 1:N
+        h_4 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h_2i, h_2o)
+        x_ver1 = (h_4 - h_f)/h_fg;
+        x_ver2 = (s_4 - s_f)/s_fg;
+
+        if (abs(x_ver1 - x_ver2) <= ϵ)
+            return x[i]
+        end
+    end
+
 end

@@ -76,10 +76,7 @@ function find_state(Gas; P::Float64=-1.0, T::Float64=-1.0, h::Float64=-1.0, s::F
                 break
             end
         end
-        h_f = Gas["Enthalpy (l, kJ/kg)"][search_index]
-        h_fg = Gas["Enthalpy (v, kJ/kg)"][search_index]
-        s_f = Gas["Entropy (l, J/g*K)"][search_index]
-        s_fg = Gas["Entropy (v, J/g*K)"][search_index]
+        h_f = Gas[""]
     end
 
 end
@@ -181,27 +178,37 @@ function Sat_State(P, Gas)
     return h_f, h_fg, s_f, s_fg
 end
 
-function Quality_Search(h_9, h_2i, h_1, h_2o, P, Gas)
+function Quality_Search(h_9, h_2i, h_1, h_2o, Gas)
     
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))
 
-    h_f, h_fg, s_f, s_fg = Sat_State(P, Gas)
-
     x = 0:0.001:1;
 
     N = length(x);
+    M = length(Gas["Pressure (MPa)"]);
 
     ϵ = 0.1;
     
     for i ∈ 1:N
         h_4 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h_2i, h_2o)
-        x_ver1 = (h_4 - h_f)/h_fg;
-        x_ver2 = (s_4 - s_f)/s_fg;
+        
+        for j ∈ 1:M
+            P = Gas["Pressure (MPa)"][j];
 
-        if (abs(x_ver1 - x_ver2) <= ϵ)
-            return x[i]
+            h_f = Gas["Enthalpy (l, kJ/kg)"][j];
+            h_fg = Gas["Enthalpy (v, kJ/kg)"][j];
+            s_f = Gas["Entropy (l, J/g*K)"][j];
+            s_fg = Gas["Entropy (v, J/g*K)"][j];
+            
+            x_ver1 = (h_4 - h_f)/h_fg;
+            x_ver2 = (s_4 - s_f)/s_fg;
+            
+            print(i, " ", j)
+            if (abs(x_ver1 - x_ver2) < ϵ && abs(x_ver1 - x) < ϵ)
+                return P, x[i]
+            end
+
         end
     end
-
 end

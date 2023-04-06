@@ -24,4 +24,6 @@ s_evap = 1.7461 # kJ/kgK
 
 State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0)
 State_9 = State(T_cond, P_cond, h_cond, s_cond, 0.0)
+State_2 = Nozzle(State_9, State_1,R134a_Mix, 0.010)
+State_4 = diffuser(State_9.h, State_1.h, State_2, R134a_Mix)
 

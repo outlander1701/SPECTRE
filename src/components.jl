@@ -31,7 +31,56 @@ function quality(Gas, P; h::Float64=-1.0, s::Float64=-1.0)
 
     return X
 end
+function nozzle(State_in_9, State_in_1, Gas, P_mix)
+    s_i = State_in_9.s
+    s_o = State_in_1.s
 
+    N = length(Gas["Pressure (MPa)"]) + 1
+
+    search_index_1 = 1
+    for i ∈ 1:N
+        if (abs(Gas["Pressure (MPa)"] - P) < 0.001)
+            search_index_1 = i;
+            break
+        elseif (i == N)
+            return println("Error: Value not found")
+        end
+    end
+
+    s_f = Gas["Entropy (l, J/g*K)"][i];
+    s_v = Gas["Entropy (v, J/g*K)"][i];
+    h_f = Gas["Enthalpy (l, kJ/kg)"][i];
+    h_v = Gas["Enthalpy (v, kJ/kg)"][i];
+
+    X_i = (s_i - s_f)/(s_v - s_f)
+    X_o = (s_o - s_f)/(s_v - s_f)
+
+    h_i = h_f + X_i*(h_v - h_f)
+    h_o = h_f + X_o*(h_v - h_f)
+    return [h_i, h_o]
+end
+function diffuser(h_9, h_1, h, Gas)
+    P, X, h = Quality_Search(h_9, h_1, h, Gas);
+
+    search_index = 1
+    for i ∈ 1:N
+        if (abs(Gas["Pressure (MPa)"] - P) < 0.001)
+            search_index_1 = i;
+            break
+        elseif (i == N)
+            return println("Error: Value not found")
+        end
+    end
+
+    T = Gas["Temperature (K)"][search_index];
+
+    s_f = Gas["Entropy (l, J/g*K)"][search_index];
+    s_v = Gas["Entropy (v, J/g*K)"][search_index];
+    
+    s = s_f - X*(s_v - s_f)
+
+    return State(T, P, h, s, X)
+end
 function throttle(State_in, Gas, T_min)
     """
     Isoenthalpic throttle
@@ -41,7 +90,7 @@ function throttle(State_in, Gas, T_min)
 
     P = Float64(Gas["Pressure (MPa)"][1])
 
-    X = quality(Gas, h=h) 
+    X = quality(Gas, P, h=h) 
     s_f = Gas["Entropy (l, J/g*K)"][1];
     s_v = Gas["Entropy (v, J/g*K)"][1];
     
@@ -170,7 +219,7 @@ function vapor_seperator(State) # Double check temperature
 
     return State(T, P, h_f, s_f, 0), State(T, P, h_v, s_v, 1)
 end
-
+"""
 function diffuser(State) # Check this
     """
     Isentropic diffuser
@@ -190,4 +239,73 @@ function diffuser(State) # Check this
     
 
     return State(T, P, h, s, X)
+end
+"""
+
+function Diffuser_Enthalpy(x, v_2i, v_2o, h)
+    h_2i = h[1]
+    h_2o = h[2]
+    v_3 = x*v_2i + (1-x)*v_2o
+    h_3 = x*(h_2i + .5*(v_2i^2)) + (1-x)*(h_2o + .5*(v_2o^2)) + .5*v_3^2
+    h_4 = h_3 + .5*(v_3^2)
+    return h_4
+end
+
+function Sat_State(P, Gas)
+
+    n = 0;
+    N = length(Gas["Pressure (MPa)"])
+
+    for i ∈ 1:N
+        ϵ = abs(P - Gas["Pressure (MPa)"][i])
+        if (ϵ < 0.0005)
+            n = i;
+            break
+        end
+    end
+
+    h_f = Gas["Enthalpy (l, kJ/kg)"][n];
+    h_fg = Gas["Enthalpy (v, kJ/kg)"][n];
+    s_f = Gas["Entropy (l, J/g*K)"][n];
+    s_fg = Gas["Entropy (v, J/g*K)"][n];
+
+    return h_f, h_fg, s_f, s_fg
+end
+
+function Quality_Search(h_9, h_1, h, Gas)
+    
+    h_2i = h[1]
+    h_2o = h[2]
+
+    v_2i = sqrt(2*(h_9 - h_2i))
+    v_2o = sqrt(2*(h_1 - h_2o))
+
+    x = 0:0.001:1;
+
+    N = length(x);
+    M = length(Gas["Pressure (MPa)"]);
+
+    ϵ = 0.1;
+    
+    for i ∈ 1:N
+        h_4 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
+        
+        for j ∈ 1:M
+            P = Gas["Pressure (MPa)"][j];
+
+            h_f = Gas["Enthalpy (l, kJ/kg)"][j];
+            h_fg = Gas["Enthalpy (v, kJ/kg)"][j];
+            s_f = Gas["Entropy (l, J/g*K)"][j];
+            s_fg = Gas["Entropy (v, J/g*K)"][j];
+            
+            x_ver1 = (h_4 - h_f)/h_fg;
+            x_ver2 = (s_4 - s_f)/s_fg;
+            
+            print(i, " ", j)
+            if (abs(x_ver1 - x_ver2) < ϵ && abs(x_ver1 - x) < ϵ)
+                return P, x[i], h_4
+            end
+
+        end
+    end
 end

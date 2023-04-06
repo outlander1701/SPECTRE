@@ -43,7 +43,9 @@ mutable struct State
 
 end
 
-function Diffuser_Enthalpy(x, v_2i, v_2o, h_2i, h_2o)
+function Diffuser_Enthalpy(x, v_2i, v_2o, h)
+    h_2i = h[1]
+    h_2o = h[2]
     v_3 = x*v_2i + (1-x)*v_2o
     h_3 = x*(h_2i + .5*(v_2i^2)) + (1-x)*(h_2o + .5*(v_2o^2)) + .5*v_3^2
     h_4 = h_3 + .5*(v_3^2)
@@ -84,7 +86,7 @@ function Quality_Search(h_9, h_2i, h_1, h_2o, Gas)
     ϵ = 0.1;
     
     for i ∈ 1:N
-        h_4 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h_2i, h_2o)
+        h_4 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
         
         for j ∈ 1:M
             P = Gas["Pressure (MPa)"][j];

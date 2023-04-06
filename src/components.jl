@@ -1,6 +1,6 @@
 include("utilities.jl")
 
-function quality(Gas, P; h::FLoat64=-1, s::FLoat64=-1)
+function quality(Gas, P; h::Float64=-1.0, s::Float64=-1.0)
 
     search_index = 1
     for i ∈ eachindex(Gas["Pressure (MPa)"])
@@ -22,6 +22,7 @@ function quality(Gas, P; h::FLoat64=-1, s::FLoat64=-1)
         X = (h - h_f)/h_fg
     else
         X = (s - s_f)/s_fg
+    end
 
     return X
 end

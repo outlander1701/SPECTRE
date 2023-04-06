@@ -28,7 +28,7 @@ function interpolate_func(x, x_vec::Vector, y_vec::Vector)
     return (((y_vec[n] - y_vec[n-1]) / (x_vec[n] - x_vec[n-1])) * (x - x_vec[n-1])) + y_vec[n-1]
 
 end
-
+"""
 function find_state(Gas; P::Float64=-1.0, T::Float64=-1.0, h::Float64=-1.0, s::Float64=-1.0, X::Float64=-1.0)
     eval_state = [P != -1.0, T != -1.0, 𝓋 != -1.0, h != -1.0, s != -1.0, X != -1.0]
 
@@ -80,7 +80,7 @@ function find_state(Gas; P::Float64=-1.0, T::Float64=-1.0, h::Float64=-1.0, s::F
     end
 
 end
-
+"""
 
 """
 function create_state(Gas; P::Float64=0.0, T::Float64=0.0, 𝓋::Float64=0.0, h::Float64=0.0, s::Float64=0.0, X::Float64=0.0)
@@ -146,7 +146,7 @@ mutable struct State
     P::Float64
     h::Float64
     s::Float64
-    X::FLoat64
+    X::Float64
 
 end
 

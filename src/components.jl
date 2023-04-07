@@ -209,7 +209,6 @@ function condensor(State_in, Gas, T_cond)
 end
 
 
-
 function vapor_seperator(State_in, Gas) # Double check temperature
     """
     Vapor Seperator
@@ -241,6 +240,9 @@ function vapor_seperator(State_in, Gas) # Double check temperature
 end
 
 function Diffuser_Enthalpy(x, v_2i, v_2o, h)
+    """
+    x = (m_1 / m_t)
+    """
     h_2i = h[1]
     h_2o = h[2]
     v_3 = (1-x)*v_2i + (x)*v_2o
@@ -248,6 +250,7 @@ function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     h_4 = h_3 + .5*(v_3^2)
     return h_4, h_3
 end
+
 
 function Sat_State(P, Gas, ϵ)
 
@@ -278,6 +281,74 @@ function Sat_State(P, Gas, ϵ)
     return h_f, h_v, s_f, s_v
 end
 
+
+function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
+    # Mixer
+
+    h_2i = h[1]
+    h_2o = h[2]
+
+    v_2i = sqrt(2*(h_9 - h_2i))
+    v_2o = sqrt(2*(h_1 - h_2o))
+
+    x = 0:0.001:1;
+
+    N = length(x);
+    M = length(Gas_Mix["Pressure (MPa)"]);
+
+    ϵ = 0.01;
+
+    h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.01)
+
+    # Diffuser
+
+    x_in = 1
+    x_out = 0
+    i = 0;
+
+    while (abs(x_in - x_out) > 0.01)
+        i ++
+        x = .5*(x_in + x_out)
+
+        h_4, h_3 = Diffuser_Enthalpy(x_in, v_2i, v_2o, h)
+        
+        X_mix = (h_3 - h_f)/(h_v - h_f)
+        s_4 = s_f + X_mix * (s_v - s_f)
+        
+        M = length(Gas_Dif["Pressure (MPa)"])
+        P = 0;
+        x_out = 0;
+        search_index = 1;
+
+        for j ∈ 1:M
+            P_dif = Gas_Dif["Pressure (MPa)"][j];
+
+            h_f_i = Gas_Dif["Enthalpy (l, kJ/kg)"][j];
+            h_v_i = Gas_Dif["Enthalpy (v, kJ/kg)"][j];
+            s_f_i = Gas_Dif["Entropy (l, J/g*K)"][j];
+            s_v_i = Gas_Dif["Entropy (v, J/g*K)"][j];
+            
+            x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
+            x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
+
+            #println(x_ver1, " ", x_ver2, " ", abs(x_ver1 - x_ver2), " ", abs(x_ver1 + x[i] - 1), " ", s_4)
+            
+            if (abs(x_ver1 - x_ver2) < ϵ)
+                P = P_dif;
+                x_out = x_ver1;
+                search_index = j;
+                break
+            end
+        end
+        if (i >= 1000)
+            break
+        end
+    end
+end
+
+
+
+"""
 function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     
     h_2i = h[1]
@@ -291,7 +362,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     N = length(x);
     M = length(Gas_Mix["Pressure (MPa)"]);
 
-    ϵ = 0.1;
+    ϵ = 0.01;
     
     h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.01)
 
@@ -311,12 +382,17 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
 
-            println(x_ver1, " ", x_ver2, " ", abs(x_ver1 - x_ver2), " ", abs(x_ver1 - x[i]))
-            if (abs(x_ver1 - x_ver2) < ϵ) && (abs(x_ver1 - x[i]) < ϵ)
+            println(x_ver1, " ", x_ver2, " ", abs(x_ver1 - x_ver2), " ", abs(x_ver1 + x[i] - 1), " ", s_4)
+            
+            if (abs(x_ver1 - x_ver2) < ϵ) && (abs(x_ver1 + x[i] - 1) < ϵ)
                 println([P, x[i], h_4, s_4])
                 return P, x[i], h_4, s_4
             end
-
+        
         end
+
+
+
     end
 end
+"""

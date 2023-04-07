@@ -21,7 +21,7 @@ T_evap = 248.0 # K Need to look at this value
 P_evap = 0.10655 # MPa this is just for R-134a
 h_evap = 383.4 # kJ/kg
 s_evap = 1.7461 # kJ/kgK
-P_mix = 0.09;
+P_mix = 0.01;
 
 
 State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0)

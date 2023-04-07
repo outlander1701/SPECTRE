@@ -62,9 +62,9 @@ function nozzle(State_in_9, State_in_1, Gas, P_mix)
     
     return [h_i, h_o]
 end
-function diffuser(h_9, h_1, h, Gas)
+function diffuser(h_9, h_1, h, Gas, P_mix)
 
-    P, X, h = Quality_Search(h_9, h_1, h, Gas);
+    P, X, h = Quality_Search(h_9, h_1, h, Gas, P_mix);
     
     search_index = 1
 
@@ -258,7 +258,7 @@ function Sat_State(P, Gas)
     return h_f, h_fg, s_f, s_fg
 end
 
-function Quality_Search(h_9, h_1, h, Gas)
+function Quality_Search(h_9, h_1, h, Gas, P_mix)
     
     h_2i = h[1]
     h_2o = h[2]
@@ -273,13 +273,12 @@ function Quality_Search(h_9, h_1, h, Gas)
 
     ϵ = 0.1;
 
-    P = P_mix
 
     N = length(Gas["Pressure (MPa)"]) + 1
 
     search_index = 1
     for k ∈ 1:N
-        if (abs(Gas["Pressure (MPa)"][k] - P) < 0.001)
+        if (abs(Gas["Pressure (MPa)"][k] - P_mix) < 0.001)
             search_index = k;
             break
         elseif (k == N)

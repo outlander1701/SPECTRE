@@ -68,21 +68,22 @@ end
 
 function diffuser(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix)
 
-    P, X, h, s_4 = Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix);
+    P, X, h, s_4, search_index = Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix);
     
-    search_index = 1
 
-    N = length(Gas_Diff["Pressure (MPa)"]) + 1
+   
+"""
+    N = length(Gas_Diff["Pressure (MPa)"])
 
     for i ∈ 1:N
-        if (abs(Gas_Diff["Pressure (MPa)"][i] - P) < 0.001)
+        if (abs(Gas_Diff["Pressure (MPa)"][i] - P) < 0.1) # 0.001
             search_index = i;
             break
         elseif (i == N)
             return println("Error: Value not found")
         end
     end
-
+"""
     T = Gas_Diff["Temperature (K)"][search_index];
 
     #s_f = Gas["Entropy (l, J/g*K)"][search_index];
@@ -291,24 +292,27 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))
 
-    x = 0:0.001:1;
-
-    N = length(x);
-    M = length(Gas_Mix["Pressure (MPa)"]);
-
-    ϵ = 0.01;
-
     h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.01)
 
     # Diffuser
 
     x_in = 1
     x_out = 0
-    i = 0;
+    i = 0
+    P = 0
+    s_4 = 0;
+    h_4 = 0;
+    search_index = 1;
 
     while (abs(x_in - x_out) > 0.01)
-        i ++
-        x = .5*(x_in + x_out)
+        i = i+1;
+        ϵ = 0.1;
+
+        #println(abs(x_in - x_out))
+
+        x_in = .5*(x_in + x_out)
+
+        #println(x_in)
 
         h_4, h_3 = Diffuser_Enthalpy(x_in, v_2i, v_2o, h)
         
@@ -316,11 +320,9 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
         s_4 = s_f + X_mix * (s_v - s_f)
         
         M = length(Gas_Dif["Pressure (MPa)"])
-        P = 0;
-        x_out = 0;
-        search_index = 1;
-
-        for j ∈ 1:M
+        
+        for j ∈ 1:1:M
+            #println(i, " ", j)
             P_dif = Gas_Dif["Pressure (MPa)"][j];
 
             h_f_i = Gas_Dif["Enthalpy (l, kJ/kg)"][j];
@@ -332,18 +334,28 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
 
             #println(x_ver1, " ", x_ver2, " ", abs(x_ver1 - x_ver2), " ", abs(x_ver1 + x[i] - 1), " ", s_4)
+            #println(ϵ, " ", abs(x_ver1 - x_ver2), " ", i, " ", j)
             
             if (abs(x_ver1 - x_ver2) < ϵ)
-                P = P_dif;
+                #println("Code monkeys eating bananas")
                 x_out = x_ver1;
                 search_index = j;
-                break
+                #println(search_index)
+
             end
         end
+
+       # println(x_out)
+        """
         if (i >= 1000)
             break
         end
+        """
     end
+
+    P = Gas_Dif["Pressure (MPa)"][search_index]
+
+    return P, x_out, h_4, s_4, search_index
 end
 
 

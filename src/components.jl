@@ -316,7 +316,10 @@ function Quality_Search(h_9, h_1, h, Gas, P_mix)
             x_ver1 = (h_4 - h_f)/(h_v - h_f);
             x_ver2 = (s_4 - s_f)/(s_v - s_f);
 
+            #println(ϵ, " ", abs(x_ver1 - x_ver2), " ", abs(x_ver1 - x[i]), " ", x[i])
+            println(x_ver1, " ", x_ver2)
             if (abs(x_ver1 - x_ver2) < ϵ) && (abs(x_ver1 - x[i]) < ϵ)
+                println("Hello there!")
                 return P, x[i], h_4
             end
 

@@ -33,5 +33,6 @@
     "**/.vscode",
     "**/.vscode/**"
   ],
-  "C_Cpp_Runner.useAddressSanitizer": false
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "julia.environmentPath": "c:\\Users\\7541101\\Desktop\\SPECTRE\\src"
 }

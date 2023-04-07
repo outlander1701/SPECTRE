@@ -219,28 +219,8 @@ function vapor_seperator(State) # Double check temperature
 
     return State(T, P, h_f, s_f, 0), State(T, P, h_v, s_v, 1)
 end
-"""
-function diffuser(State) # Check this
-    """
-    Isentropic diffuser
-    """
-    s = State.s
-    
 
-    search_index = 1
-    for i ∈ eachindex(Gas["Pressure (MPa)"])
-        if Gas["Pressure (MPa)"][i] == P
-            search_index = i
-        end
-    end
 
-    T = Gas["Temperature (K)"][search_index]
-    h = Gas["Enthalpy (v, kJ/kg)"][search_index]
-    
-
-    return State(T, P, h, s, X)
-end
-"""
 
 function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     h_2i = h[1]

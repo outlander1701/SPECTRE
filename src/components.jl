@@ -31,6 +31,8 @@ function quality(Gas, P; h::Float64=-1.0, s::Float64=-1.0)
 
     return X
 end
+
+
 function nozzle(State_in_9, State_in_1, Gas, P_mix)
     s_i = State_in_9.s
     s_o = State_in_1.s
@@ -59,6 +61,8 @@ function nozzle(State_in_9, State_in_1, Gas, P_mix)
     h_o = h_f + X_o*(h_v - h_f)
     return [h_i, h_o]
 end
+
+
 function diffuser(h_9, h_1, h, Gas)
     P, X, h = Quality_Search(h_9, h_1, h, Gas);
 
@@ -81,6 +85,8 @@ function diffuser(h_9, h_1, h, Gas)
 
     return State(T, P, h, s, X)
 end
+
+
 function throttle(State_in, Gas, T_min)
     """
     Isoenthalpic throttle
@@ -100,6 +106,8 @@ function throttle(State_in, Gas, T_min)
     return State(T, P, h, s, X)
 
 end
+
+
 function turbine(State_in, Gas, T_min)
     """
     Isoenthalpic throttle
@@ -119,6 +127,8 @@ function turbine(State_in, Gas, T_min)
     return State(T, P, h, s, X)
 
 end
+
+
 function compressor(State_in, Gas, P_max) # Check for superheat
     """
     Isentropic compressor
@@ -146,6 +156,7 @@ function compressor(State_in, Gas, P_max) # Check for superheat
     return State(T, P, h, s, X)
 end
 
+
 function evaporator(State_in, Gas)
     """
     Isobar Evaporator
@@ -166,6 +177,7 @@ function evaporator(State_in, Gas)
 
     return State(T, P, h, s, X)
 end
+
 
 function condensor(State_in, Gas, T_cond)
     """
@@ -219,28 +231,7 @@ function vapor_seperator(State) # Double check temperature
 
     return State(T, P, h_f, s_f, 0), State(T, P, h_v, s_v, 1)
 end
-"""
-function diffuser(State) # Check this
-    """
-    Isentropic diffuser
-    """
-    s = State.s
-    
 
-    search_index = 1
-    for i ∈ eachindex(Gas["Pressure (MPa)"])
-        if Gas["Pressure (MPa)"][i] == P
-            search_index = i
-        end
-    end
-
-    T = Gas["Temperature (K)"][search_index]
-    h = Gas["Enthalpy (v, kJ/kg)"][search_index]
-    
-
-    return State(T, P, h, s, X)
-end
-"""
 
 function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     h_2i = h[1]

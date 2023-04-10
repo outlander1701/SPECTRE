@@ -40,5 +40,5 @@ println(CoP)
 println(" ")
 """
 
-work_out_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L)
+#work_out_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L)
 CoP_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L)

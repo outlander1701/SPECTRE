@@ -83,6 +83,7 @@ function throttle(State_in, Gas, T_min)
     P = Float64(Gas["Pressure (MPa)"][1])
 
     X = quality(Gas, P, h=h) 
+
     s_f = Gas["Entropy (l, J/g*K)"][1];
     s_v = Gas["Entropy (v, J/g*K)"][1];
     
@@ -195,7 +196,7 @@ function vapor_seperator(State_in, Gas) # Double check temperature
     T = State_in.T
 
     search_index = 1
-    for i ∈ eachindex(Gas["Pressure (MPa)"])
+    for i ∈ eachindex(Gas["Pressure (MPa)"])  # 😸
         if Gas["Pressure (MPa)"][i] == P
             search_index = i
         end
@@ -312,8 +313,6 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 end
 
 
-
-
 function  mass_flow_rate_1(Q_L, State_in, State_out)
     h_in = State_in.h
     h_out = State_out.h
@@ -348,4 +347,11 @@ function work_in_turb(State_in_c, State_out_c, State_in_t, State_out_t, m_dot)
     h_out_t = State_out_t.h
 
     return m_dot*((h_out_c - h_in_c) - (h_in_t - h_out_t))
+end
+
+function Q_out(State_in, State_out, m_dot)
+    h_in = State_in.h
+    h_out = State_out.h
+
+    return m_dot*(h_in - h_out)
 end

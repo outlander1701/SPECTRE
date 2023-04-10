@@ -286,7 +286,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     # Mixer
 
     h_2i = h[1]
-    h_2o = h[2]
+    h_2o = h[2] 
 
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))
@@ -302,22 +302,22 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 
     # Diffuser
 
-    x_in = 1
-    x_out = 0
+    x_in = 1 
+    x_out = 0 
     i = 0;
 
     while (abs(x_in - x_out) > 0.01)
-        i ++
+        i = i + 1
         x = .5*(x_in + x_out)
 
-        h_4, h_3 = Diffuser_Enthalpy(x_in, v_2i, v_2o, h)
+        h_4, h_3 = Diffuser_Enthalpy(x_in, v_2i, v_2o, h) # Double check here
         
         X_mix = (h_3 - h_f)/(h_v - h_f)
         s_4 = s_f + X_mix * (s_v - s_f)
         
         M = length(Gas_Dif["Pressure (MPa)"])
         P = 0;
-        x_out = 0;
+        x_out = 0; # why is this here?
         search_index = 1;
 
         for j ∈ 1:M
@@ -340,6 +340,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
                 break
             end
         end
+        
         if (i >= 1000)
             break
         end

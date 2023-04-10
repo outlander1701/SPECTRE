@@ -255,7 +255,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     # Mixer
 
     h_2i = h[1]
-    h_2o = h[2]
+    h_2o = h[2] 
 
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))

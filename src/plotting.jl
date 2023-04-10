@@ -24,10 +24,12 @@ function work_out_net_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L)
 
     end
 
-    xlabel!("Pressure Ratio")
-    ylabel!("Net Work Out [kJ/kg]")
+    xlabel!("Mixing Pressure [MPa]")
+    ylabel!("Work In [kJ]")
 
 end
+
+
 function CoP_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L)
     N = length(P_mix)
     M = length(Gasses)
@@ -47,7 +49,7 @@ function CoP_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L)
         scatter!(P_mix, CoP, label=latexstring("$name"))
     end
 
-    xlabel!("Pressure Ratio")
+    xlabel!("Mixing Pressure [MPa]")
     ylabel!("CoP")
 
 end

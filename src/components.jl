@@ -214,11 +214,14 @@ function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     """
     x = (m_1 / m_t)
     """
+    
     h_2i = h[1]
     h_2o = h[2]
+
     v_3 = (1-x)*v_2i + (x)*v_2o
-    h_3 = (1-x)*(h_2i + .5*(v_2i^2)) + (x)*(h_2o + .5*(v_2o^2)) - .5*v_3^2 
-    h_4 = h_3 + .5*(v_3^2)
+    h_3 = (1-x)*(h_2i + 0.5*(v_2i^2)) + (x)*(h_2o + 0.5*(v_2o^2)) - 0.5*v_3^2 
+    h_4 = h_3 + 0.5*(v_3^2)
+    
     return h_4, h_3
 end
 
@@ -267,21 +270,23 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     P = 0
     s_4 = 0;
     h_4 = 0;
-    search_index = 1;
+    search_index = -42;
+    
+    x = 0:0.001:1
+    N = length(x)
+    
+    for i ∈ 1:N
+        ϵ_1 = 0.001
+        ϵ_2 = 0.001
 
-    while (abs(x_in - x_out) > 0.01)
-        i = i+1
-        ϵ = 0.1 # As ϵ → 0, CoP → ∞
-
-        x_in = .5*(x_in + x_out)
-
-        h_4, h_3 = Diffuser_Enthalpy(x_in, v_2i, v_2o, h)
-        
+        h_4, h_3 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
+    
         X_mix = (h_3 - h_f)/(h_v - h_f)
         s_4 = s_f + X_mix * (s_v - s_f)
+    
         
         M = length(Gas_Dif["Pressure (MPa)"])
-        
+    
         for j ∈ 1:1:M
             
             h_f_i = Gas_Dif["Enthalpy (l, kJ/kg)"][j];
@@ -291,19 +296,14 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             
             x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
-            
-            if (abs(x_ver1 - x_ver2) < ϵ)
 
+            if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
                 x_out = x_ver1;
                 search_index = j;
+                break
             end
-        end
 
-        """
-        if (i >= 1000)
-            break
         end
-        """
     end
 
     P = Gas_Dif["Pressure (MPa)"][search_index]
@@ -313,16 +313,20 @@ end
 
 
 
+
 function  mass_flow_rate_1(Q_L, State_in, State_out)
     h_in = State_in.h
     h_out = State_out.h
 
     return Q_L/(h_out - h_in)
 end
+
+
 function mass_flow_rate_9(m_dot_1, State_4)
     x = State_4.X
     return (x * m_dot_1)/(1-x)
 end
+
 
 function work_in(State_in, State_out, m_dot_9)
     h_in = State_in.h
@@ -330,9 +334,13 @@ function work_in(State_in, State_out, m_dot_9)
         
     return m_dot_9 * (h_out - h_in)
 end
+
+
 function COP(Q_L, work_in)
     return Q_L/work_in
 end
+
+
 function work_in_turb(State_in_c, State_out_c, State_in_t, State_out_t, m_dot)
     h_in_c = State_in_c.h
     h_in_t = State_in_t.h

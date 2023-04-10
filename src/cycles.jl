@@ -1,37 +1,62 @@
-# Simple throttle cycle
-"""
-State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0);
-State_2 = compressor(State_1, R134a_Comp, P_cond);
-State_3 = condensor(State_2, R134a_Cond, T_cond);
-State_4 = throttle(State_3, R134a_Throttle, T_evap);
-State_5 = evaporator(State_4, R134a_Evap);
+function Simple_Throttle(State_1, State_9, R134a_Mix, R134a_Dif, R134a_Throttle, R134a_Comp, R134a_Evap, P_mix, Q_L)
+    T_evap = State_1.T
+    P_evap = State_1.P 
+    T_cond = State_9.T
+    P_cond = State_9.P
 
-println(["State 1", State_1.P, State_1.T, State_1.s, State_1.h, State_1.X])
-println(["State 2", State_2.P, State_2.T, State_2.s, State_2.h, State_2.X])
-println(["State 3", State_3.P, State_3.T, State_3.s, State_3.h, State_3.X])
-println(["State 4", State_4.P, State_4.T, State_4.s, State_4.h, State_4.X])
-println(["State 5", State_5.P, State_5.T, State_5.s, State_5.h, State_5.X])
+    State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0);
+    State_2 = compressor(State_1, R134a_Comp, P_cond);
+    State_3 = condensor(State_2, R134a_Cond, T_cond);
+    State_4 = throttle(State_3, R134a_Throttle, T_evap);
+    State_1_prime = evaporator(State_4, R134a_Evap);
 
-s = [State_1.s, State_2.s, State_3.s, State_4.s, State_5.s];
-T = [State_1.T, State_2.T, State_3.T, State_4.T, State_5.T];
+    m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_prime)
+    work = work_in(State_1, State_2, m_dot_1)
+    CoP = COP(Q_L, work)
 
-scatter(s, T)
+    return m_dot_1, work, CoP
+end
 
-# Simple Turbine Cycle
-State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0);
-State_2 = compressor(State_1, R134a_Comp, P_cond);
-State_3 = condensor(State_2, R134a_Cond, T_cond);
-State_4 = turbine(State_3, R134a_Throttle, T_evap);
-State_5 = evaporator(State_4, R134a_Evap);
+function Simple_Turbine(State_1, State_9, R134a_Mix, R134a_Dif, R134a_Throttle, R134a_Comp, R134a_Evap, P_mix, Q_L)
+    T_evap = State_1.T
+    P_evap = State_1.P 
+    T_cond = State_9.T
+    P_cond = State_9.P
 
-println(["State 1", State_1.P, State_1.T, State_1.s, State_1.h, State_1.X])
-println(["State 2", State_2.P, State_2.T, State_2.s, State_2.h, State_2.X])
-println(["State 3", State_3.P, State_3.T, State_3.s, State_3.h, State_3.X])
-println(["State 4", State_4.P, State_4.T, State_4.s, State_4.h, State_4.X])
-println(["State 5", State_5.P, State_5.T, State_5.s, State_5.h, State_5.X])
+    State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0);
+    State_2 = compressor(State_1, R134a_Comp, P_cond);
+    State_3 = condensor(State_2, R134a_Cond, T_cond);
+    State_4 = turbine(State_3, R134a_Throttle, T_evap);
+    State_1_Prime = evaporator(State_4, R134a_Evap);
 
-s = [State_1.s, State_2.s, State_3.s, State_4.s, State_5.s];
-T = [State_1.T, State_2.T, State_3.T, State_4.T, State_5.T];
+    m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_prime)
+    work = work_in_turb(State_1, State_2, State_3, State_4, m_dot_1)
+    CoP = COP(Q_L, work)
 
-scatter(s, T)
-"""
+    return m_dot_1, work, CoP
+end
+
+function SPECTRE(State_1, State_9, R134a_Mix, R134a_Dif, R134a_Throttle, R134a_Comp, R134a_Evap, P_mix, Q_L)
+    
+    T_evap = State_1.T
+    P_evap = State_1.P 
+    T_cond = State_9.T
+    P_cond = State_9.P
+
+
+    State_2 = nozzle(State_9, State_1,R134a_Mix, P_mix);
+    State_4 = diffuser(State_9.h, State_1.h, State_2, R134a_Mix, R134a_Dif, P_mix)
+    State_5, State_7 = vapor_seperator(State_4, R134a_Dif)
+    State_6 = throttle(State_5, R134a_Throttle, T_evap)
+    State_8 = compressor(State_7, R134a_Comp, P_cond)
+    State_9_prime = condensor(State_8, R134a_Cond, T_cond)
+    State_1_prime = evaporator(State_6, R134a_Evap)
+
+    print("h_9: ", State_9.h, " h_8: ", State_8.h)
+    m_dot_1 = mass_flow_rate_1(Q_L, State_6, State_1_prime)
+    m_dot_9 = mass_flow_rate_9(m_dot_1, State_4)
+    work = work_in(State_7, State_8, m_dot_9)
+    CoP = COP(Q_L, work)
+
+    return m_dot_1, m_dot_9, work, CoP
+end

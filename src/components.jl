@@ -63,13 +63,13 @@ end
 
 function diffuser(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix)
 
-    P, X, h, s_4, search_index = Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix);
+    P, X, h, s_4, search_index, V = Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix);
     
     T = Gas_Diff["Temperature (K)"][search_index];
 
     s = s_4
 
-    return State(T, P, h, s, X)
+    return State(T, P, h, s, X), V
 end
 
 
@@ -109,7 +109,6 @@ function turbine(State_in, Gas, T_min)
     h_v = Gas["Enthalpy (v, kJ/kg)"][1];
     
     h = h_f + X*(h_v-h_f);
-
 
     return State(T, P, h, s, X)
 
@@ -181,8 +180,16 @@ function condensor(State_in, Gas, T_cond)
         end
     end
 
-    s = Gas["Entropy (l, J/g*K)"][search_index]
-    h = Gas["Enthalpy (l, kJ/kg)"][search_index]
+    s = 0
+    h = 0
+
+    try 
+        s = Gas["Entropy (l, J/g*K)"][search_index]
+        h = Gas["Enthalpy (l, kJ/kg)"][search_index]
+    catch e
+        s = Gas["Entropy (J/g*K)"][search_index]
+        h = Gas["Enthalpy (kJ/kg)"][search_index]
+    end
 
     return State(T, P, h, s, X)
 end
@@ -260,7 +267,10 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 
     v_2i = sqrt(2*(h_9 - h_2i))
     v_2o = sqrt(2*(h_1 - h_2o))
-
+  
+    v_2_i = sqrt(2000*(h_9 - h_2i))
+    v_2_o = sqrt(2000*(h_1 - h_2o))
+   
     h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.01)
 
     # Diffuser
@@ -277,6 +287,8 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     N = length(x)
     
     for i ∈ 1:N
+        # R-134a: ϵ = 0.001
+        # CO2: ϵ = 0.01
         ϵ_1 = 0.001
         ϵ_2 = 0.001
 
@@ -298,9 +310,12 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
 
+            #println(abs(x_ver1 - x_ver2), " ", ϵ_1, " ", abs(x[i] + x_ver1 - 1), " ", ϵ_2)
+
             if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
                 x_out = x_ver1;
                 search_index = j;
+                #println(search_index)
                 break
             end
 
@@ -309,7 +324,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 
     P = Gas_Dif["Pressure (MPa)"][search_index]
 
-    return P, x_out, h_4, s_4, search_index
+    return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o]
 end
 
 

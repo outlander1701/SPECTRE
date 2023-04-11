@@ -61,7 +61,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     P_cond = State_9.P
 
     State_2 = nozzle(State_9, State_1, Gas["Mix"], P_mix);
-    State_4 = diffuser(State_9.h, State_1.h, State_2, Gas["Mix"], Gas["Dif"], P_mix)
+    State_4, V = diffuser(State_9.h, State_1.h, State_2, Gas["Mix"], Gas["Dif"], P_mix)
     State_5, State_7 = vapor_seperator(State_4, Gas["Dif"])
     State_6 = throttle(State_5, Gas["Throttle"], T_evap)
     State_8 = compressor(State_7, Gas["Comp"], P_cond)
@@ -84,5 +84,9 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
     Ψ = T_H * S_gen_total
 
-    return m_dot_1, m_dot_9, work, CoP, Ψ
+    V_1 = V[2]
+    V_2 = V[1]
+    #println("Velocity: ", V[2], " ", V[1])
+
+    return m_dot_1, m_dot_9, work, CoP, Ψ, V_1, V_2
 end

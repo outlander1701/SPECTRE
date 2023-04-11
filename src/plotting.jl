@@ -1,7 +1,6 @@
 using Plots
 using LaTeXStrings
 
-
 function work_out_net_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L)
     N = length(P_mix)
     M = length(Gasses)

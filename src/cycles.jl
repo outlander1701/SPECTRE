@@ -81,7 +81,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
 
     S_gen_total = S_throttle + S_condensor + S_evaporator + S_mixer
 
-    println(S_throttle, " ", S_condensor, " ",  S_evaporator, " ", S_mixer)
+    #println(S_throttle, " ", S_condensor, " ",  S_evaporator, " ", S_mixer)
     
     Ψ = T_H * S_gen_total
 

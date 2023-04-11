@@ -28,10 +28,10 @@ function quality(Gas, P; h::Float64=-1.0, s::Float64=-1.0)
 end
 
 
-function nozzle(State_in_9, State_in_1, Gas, P_mix)
+function nozzle(State_in_9, State_in_1, Gas, P)
     s_i = State_in_9.s
     s_o = State_in_1.s
-    P = P_mix
+    #P = P_mix
 
     N = length(Gas["Pressure (MPa)"]) + 1
 

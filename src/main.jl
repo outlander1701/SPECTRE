@@ -8,8 +8,8 @@ include("./cycles.jl")
 include("./plotting.jl")
 
 # Constants
-T_L = -25.0 + 273 # C
-T_H = 25.0 + 273 # C
+T_L = -258.0 # C
+T_H = 298.0 # C
 Q_L = 500.0 # kW
 
 """

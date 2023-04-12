@@ -53,8 +53,8 @@ function CoP_vs_pmix(cycle_func_1,cycle_func_2,cycle_func_3, State_1,  State_9, 
         m_dot_1_2, work_2, CoP_2, Ψ_2 = cycle_func_2(State_1, State_9, Gasses[1], P, Q_L, T_L, T_H)
         m_dot_1_3, work_3, CoP_3, Ψ_3 = cycle_func_3(State_1, State_9, Gasses[1], P, Q_L, T_L, T_H)
         
-        plot!(1000 .*P, CoP_2 .*ones(length(P)), label = "Turbine")
-        plot!(1000 .*P, CoP_3 .*ones(length(P)), label = "Throttle")
+        #plot!(1000 .*P, CoP_2 .*ones(length(P)), label = "Turbine")
+        #plot!(1000 .*P, CoP_3 .*ones(length(P)), label = "Throttle")
 
     end
 
@@ -83,11 +83,11 @@ function V_vs_pmix(cycle_func, State_1, State_9, Gasses, P, Q_L, T_L, T_H)
             m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], V_1[j], V_2[j] = cycle_func(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
         end
         name = Gasses[i]["name"]
-        scatter!(P, V_1, label=latexstring("V_{out}"))
-        scatter!(1000 .*P, V_2, label=latexstring("V_{in}"))
+        scatter!(1000 .*P, 1000 .*V_1, label=latexstring("P_{4}"))
+        #scatter!(1000 .*P, V_2, label=latexstring("V_{in}"))
     end
 
     xlabel!("Mixing Pressure [kPa]")
-    ylabel!("Inlet Velocity Difference [m/s]")
+    ylabel!("Pressure [kPa]")
 
 end

@@ -1,3 +1,5 @@
+using Plots
+
 function Simple_Throttle(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     T_evap = State_1.T
     P_evap = State_1.P 
@@ -38,7 +40,22 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_4 = turbine(State_3, Gas["Throttle"], T_evap);
     State_1_Prime = evaporator(State_4, Gas["Evap"]);
 
+    state_vec = [State_1, State_2, State_3, State_4, State_1_Prime]
+    println("+===================================+")
+    println("         Entropy   Temperature")
+    counter = 1
+    for state ∈ state_vec
+        println("State $counter: ", state.s, "     ", state.T)
+        counter += 1
+    end
+    println("+===================================+")
+
+    #println("Enthalpy check: ", State_1.h, " ", State_1_Prime.h) #Enthalpies are consistent
+
     m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_Prime)
+
+    println("m_dot_1: ", m_dot_1)
+
     work = work_in_turb(State_1, State_2, State_3, State_4, m_dot_1)
     CoP = COP(Q_L, work)
     Q_H = Q_out(State_2, State_3, m_dot_1)
@@ -50,7 +67,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
     Ψ = T_H * S_gen_total
     
-    return m_dot_1, work, CoP, Ψ
+    return m_dot_1, work, CoP, Ψ, state_vec
 end
 
 function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
@@ -67,6 +84,16 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_8 = compressor(State_7, Gas["Comp"], P_cond)
     State_9_prime = condensor(State_8, Gas["Cond"], T_cond)
     State_1_prime = evaporator(State_6, Gas["Evap"])
+
+    state_vec = [State_1, State_4, State_5, State_6, State_8, State_1_prime, State_9_prime]
+    println("+===================================+")
+    println("         Entropy   Temperature")
+    counter = 1
+    for state ∈ state_vec
+        println("State $counter: ", state.s, "     ", state.T)
+        counter += 1
+    end
+    println("+===================================+")
 
     m_dot_1 = mass_flow_rate_1(Q_L, State_6, State_1_prime)
     m_dot_9 = mass_flow_rate_9(m_dot_1, State_4)

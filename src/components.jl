@@ -35,9 +35,10 @@ function nozzle(State_in_9, State_in_1, Gas, P)
 
     N = length(Gas["Pressure (MPa)"]) + 1
 
-    search_index = 1
+    search_index = -42
     for i ∈ 1:N
-        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.001)
+        #println(Gas["Pressure (MPa)"][i], " ", P, " ", abs(Gas["Pressure (MPa)"][i] - P))
+        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.001) # R-134a tol = 0.001
             search_index = i;
             break
         elseif (i == N)
@@ -313,6 +314,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             #println(abs(x_ver1 - x_ver2), " ", ϵ_1, " ", abs(x[i] + x_ver1 - 1), " ", ϵ_2)
 
             if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
+                #println("Condition met")
                 x_out = x_ver1;
                 search_index = j;
                 #println(search_index)
@@ -328,9 +330,12 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 end
 
 
-function  mass_flow_rate_1(Q_L, State_in, State_out)
+function mass_flow_rate_1(Q_L, State_in, State_out)
     h_in = State_in.h
     h_out = State_out.h
+
+    println("h_in: ", h_in)
+    println("h_out: ", h_out)
 
     return Q_L/(h_out - h_in)
 end

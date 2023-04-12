@@ -44,7 +44,6 @@ function nozzle(State_in_9, State_in_1, Gas, P)
             return println("Error: Value not found")
         end
     end
-
     s_f = Gas["Entropy (l, J/g*K)"][search_index];
     s_v = Gas["Entropy (v, J/g*K)"][search_index];
     h_f = Gas["Enthalpy (l, kJ/kg)"][search_index];
@@ -53,10 +52,11 @@ function nozzle(State_in_9, State_in_1, Gas, P)
     X_i = (s_i - s_f)/(s_v - s_f)
     X_o = (s_o - s_f)/(s_v - s_f)
 
+    
+
     h_i = h_f + X_i*(h_v - h_f)
     h_o = h_f + X_o*(h_v - h_f)
-    
-    
+
     return [h_i, h_o]
 end
 
@@ -289,6 +289,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     for i ∈ 1:N
         # R-134a: ϵ = 0.001
         # CO2: ϵ = 0.01
+
         ϵ_1 = 0.001
         ϵ_2 = 0.001
 

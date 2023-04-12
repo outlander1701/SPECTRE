@@ -8,8 +8,8 @@ include("./cycles.jl")
 include("./plotting.jl")
 
 # Constants
-T_L = -15.0 # C
-T_H = 25.0 # C
+T_L = -258.0 # C
+T_H = 298.0 # C
 Q_L = 500.0 # kW
 #Initial State (R-134a)
 P_cond = 0.88698; # MPa
@@ -21,7 +21,7 @@ T_evap = 248.0 # K Need to look at this value
 P_evap = 0.10655 # MPa this is just for R-134a
 h_evap = 383.4 # kJ/kg
 s_evap = 1.7461 # kJ/kgK
-P_mix = 0.05:0.001:0.106;
+P_mix = 0.03:0.001:0.106;
 #P_mix = 0.08;
 
 """
@@ -32,8 +32,8 @@ s_cond = 1.6668; # kJ/kgK
 
 T_evap = 249.01 # K Need to look at this value
 P_evap = 1.7297 # MPa this is just for R-134a
-h_evap = 437.06 # kJ/kg
-s_evap = 1.9690 # kJ/kgK
+h_evap = 437.05 # kJ/kg
+s_evap = 1.9739 # kJ/kgK
 #P_mix = 0.05:0.001:0.106;
 P_mix = 1.5;
 """
@@ -57,5 +57,5 @@ println(" ")
 """
 
 #work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L,T_L, T_H)
-CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
-#V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+#CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)

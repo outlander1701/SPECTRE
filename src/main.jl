@@ -1,5 +1,5 @@
 using Plots
-gr()
+#gr()
 
 include("./csv_injest.jl")
 include("./utilities.jl")
@@ -8,8 +8,13 @@ include("./cycles.jl")
 include("./plotting.jl")
 
 # Constants
+<<<<<<< HEAD
+T_L = 258.0 # C
+T_H = 298.0 # C
+=======
 T_L = 258.0 # K
 T_H = 298.0 # K
+>>>>>>> 9bd0047583e80fee7f747db3f7af71b1bc618527
 Q_L = 500.0 # kW
 
 

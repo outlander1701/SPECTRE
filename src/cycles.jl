@@ -101,7 +101,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     println("     The Great Component Debug         ")
     println("\nNozzle")
     println("e_in: ", m_dot_1*State_1.h + m_dot_9*State_9.h); e_in = m_dot_1*State_1.h + m_dot_9*State_9.h
-    println("e_out: ", m_dot_1*(State_2[1] + 0.5*V[1]^2) + m_dot_9*(State_2[2] + 0.5*V[2]^2)); e_out = m_dot_1*(State_2[1] + 0.5*V[1]^2) + m_dot_9*(State_2[2] + 0.5*V[2]^2)
+    println("e_out: ", m_dot_9*(State_2[1] + (1/2000)*V[1]^2) + m_dot_1*(State_2[2] + (1/2000)*V[2]^2)); e_out = m_dot_9*(State_2[1] + (1/2000)*V[1]^2) + m_dot_1*(State_2[2] + (1/2000)*V[2]^2)
     println("delta e: ", e_in - e_out)
     println("Relative %: ", 100 * (e_in - e_out) / (0.5 * (e_in + e_out)))
     println("+========================================+")
@@ -124,9 +124,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     V_1 = V[1]
     V_2 = V[2]
     V_3 = V[3]
-    #V_2 = State_4.P
-    #println("Velocity: ", V[2], " ", V[1])
-
+   
     println("+========================================+")
     println("     The Great Consveration Debug         ")
     println("m_dot_1: ", m_dot_1)
@@ -136,7 +134,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     println("v_2,o: ", V_2)
     println("v_3: ", V_3)
     println("\nMomentum Conservation")
-    println("p_in: ", m_dot_1*V_1 + m_dot_9*V_2); p_in = m_dot_1*V_1 + m_dot_9*V_2
+    println("p_in: ", m_dot_1*V_2 + m_dot_9*V_1); p_in = m_dot_1*V_2 + m_dot_9*V_1
     println("p_out: ", (m_dot_1 + m_dot_9)*V_3); p_out = (m_dot_1 + m_dot_9)*V_3
     println("delta p: ", p_in - p_out)
     println("Relative %: ", -100 * (p_in - p_out)/(0.5 * (p_out + p_in)))

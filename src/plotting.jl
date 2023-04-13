@@ -89,7 +89,6 @@ function V_vs_pmix(cycle_func, State_1, State_9, Gasses, P, Q_L, T_L, T_H)
         #scatter!(1000 .*P, 1000 .*V_2, label=latexstring("V_{in}"))
     end
 
-    xlabel!("Mixing Pressure [kPa]")
-    ylabel!("Velocity [m/s]")
-
+    xlabel!("Mixer Pressure [kPa]")
+    ylabel!("Exergy Destroyed [kW]")
 end

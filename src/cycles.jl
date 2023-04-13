@@ -26,7 +26,7 @@ function Simple_Throttle(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     S_evaporator = S_gen(m_dot_1, State_1_prime, State_4, Q=-Q_L, T=T_L)
     S_gen_total = S_throttle + S_condensor + S_evaporator
 
-    sgen_vec = T_H .*[S_gen_total, S_condensor, S_evaporator, S_throttle]
+    sgen_vec = T_H .*[S_gen_total, S_evaporator, S_condensor, S_throttle]
 
     print_sgen(sgen_vec)
     
@@ -60,7 +60,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     S_evaporator = S_gen(m_dot_1, State_1_Prime, State_4, Q=-Q_L, T=T_L)
 
     S_gen_total = S_condensor + S_evaporator
-    sgen_vec = T_H .*[S_gen_total, S_condensor, S_evaporator]
+    sgen_vec = T_H .*[S_gen_total, S_evaporator, S_condensor]
 
     print_sgen(sgen_vec)
 
@@ -103,8 +103,8 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     S_gen_total = S_throttle + S_condensor + S_evaporator + S_mixer
     #S_gen_total = S_throttle + S_mixer
 
-    sgen_vec = T_H .*[S_gen_total, S_evaporator, S_mixer,  S_throttle, S_condensor]
-    print_sgen(sgen_vec)
+    sgen_vec = T_H .*[S_gen_total, S_evaporator,S_condensor, S_throttle,  S_mixer]
+    #print_sgen(sgen_vec)
 
     Ψ = T_H * S_gen_total
 

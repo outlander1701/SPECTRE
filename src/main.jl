@@ -23,8 +23,8 @@ T_evap = 248.0 # K Need to look at this value
 P_evap = 0.10655 # MPa this is just for R-134a
 h_evap = 383.4 # kJ/kg
 s_evap = 1.7461 # kJ/kgK
-#P_mix = 0.001:0.001:0.106;
-P_mix = 0.10;
+P_mix = 0.001:0.001:0.106;
+#P_mix = 0.05;
 
 """
 
@@ -47,7 +47,7 @@ State_9 = State(T_cond, P_cond, h_cond, s_cond, 0.0)
 
 #m_dot_1, m_dot_9, work, CoP, Ψ = SPECTRE(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ = Simple_Throttle(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
-m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
+#m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 """
 println(" ")
 println("m_1: ", m_dot_1)
@@ -59,7 +59,7 @@ println(" ")
 """
 #work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 #CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
-#V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 
 
 #s_vec = [state_vec[i].s for i ∈ eachindex(state_vec)]

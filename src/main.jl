@@ -47,19 +47,19 @@ State_9 = State(T_cond, P_cond, h_cond, s_cond, 0.0)
 
 #m_dot_1, m_dot_9, work, CoP, Ψ = SPECTRE(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ = Simple_Throttle(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
-#m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
-"""
+m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
+
 println(" ")
 println("m_1: ", m_dot_1)
-println("m_9: ", m_dot_9)
+#println("m_9: ", m_dot_9)
 println("W: ", work)
 println("CoP: ", CoP)
 println("Exergy: ", Ψ)
 println(" ")
-"""
+
 #work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 #CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
-#V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 
 
 #s_vec = [state_vec[i].s for i ∈ eachindex(state_vec)]
@@ -67,4 +67,4 @@ println(" ")
 
 #scatter(s_vec, T_vec)
 #plot!(s_vec, T_vec)
-work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+#work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)

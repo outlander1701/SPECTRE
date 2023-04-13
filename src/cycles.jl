@@ -98,11 +98,13 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
     Ψ = T_H * S_gen_total
 
-    V_1 = V[1] - V[2]
-    V_2 = State_4.P
+    V_1 = V[1]
+    V_2 = V[2]
+    V_3 = V[3]
+    #V_2 = State_4.P
     #println("Velocity: ", V[2], " ", V[1])
 
-    return m_dot_1, m_dot_9, work, CoP, Ψ #, V_1, V_2
+    return m_dot_1, m_dot_9, work, CoP, Ψ, V_1, V_2, V_3
 end
 
 function print_table(state_vec)

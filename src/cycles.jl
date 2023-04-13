@@ -48,7 +48,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_1_Prime = evaporator(State_4, Gas["Evap"]);
 
     state_vec = [State_1, State_2, State_3, State_4, State_1_Prime]
-    print_table(state_vec)
+    #print_table(state_vec)
     #println("Enthalpy check: ", State_1.h, " ", State_1_Prime.h) #Enthalpies are consistent
 
     m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_Prime)
@@ -69,6 +69,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
     return m_dot_1, work, CoP, Ψ, state_vec
 end
+
 
 function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
@@ -106,6 +107,15 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     sgen_vec = T_H .*[S_gen_total, S_evaporator,S_condensor, S_throttle,  S_mixer]
     #print_sgen(sgen_vec)
 
+    println("+===================================+")
+    println("Throttle: ", S_throttle)
+    println("Condensor: ", S_condensor)
+    println("Evaporator: ", S_evaporator)
+    println("Mixer: ", S_mixer)
+    println("Total: ", S_gen_total)
+    println("+===================================+")
+
+    
     Ψ = T_H * S_gen_total
 
     V_1 = V[1]

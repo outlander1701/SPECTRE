@@ -12,7 +12,6 @@ T_L = 258.0 # K
 T_H = 298.0 # K
 Q_L = 500.0 # kW
 
-
 #Initial State (R-134a)
 P_cond = 0.88698; # MPa
 T_cond = 308.15; # K
@@ -51,12 +50,13 @@ State_9 = State(T_cond, P_cond, h_cond, s_cond, 0.0)
 """
 println(" ")
 println("m_1: ", m_dot_1)
-println("m_9: ", m_dot_9)
+#println("m_9: ", m_dot_9)
 println("W: ", work)
 println("CoP: ", CoP)
 println("Exergy: ", Ψ)
 println(" ")
 """
+
 #work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 #CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)

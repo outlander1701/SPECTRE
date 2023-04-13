@@ -233,7 +233,7 @@ function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     h_3 = (1-x)*(h_2i + 0.5*(v_2i^2)) + (x)*(h_2o + 0.5*(v_2o^2)) - 0.5*v_3^2 
     h_4 = h_3 + 0.5*(v_3^2)
 
-    return h_4, h_3
+    return h_4, h_3, v_3
 end
 
 
@@ -294,7 +294,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
         ϵ_1 = 0.001
         ϵ_2 = 0.001
 
-        h_4, h_3 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
+        h_4, h_3, v_3 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
 
         X_mix = (h_3 - h_f)/(h_v - h_f)
 
@@ -318,7 +318,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
                 search_index = j;
 
                 P = Gas_Dif["Pressure (MPa)"][search_index]
-                return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o]
+                return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o, sqrt(1000)*v_3]
             end
 
         end

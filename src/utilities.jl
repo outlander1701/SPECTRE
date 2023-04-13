@@ -43,12 +43,12 @@ mutable struct State
 
 end
 
-function S_gen(State_out, State_in; Q=0, T=0)
+function S_gen(m_dot, State_out, State_in; Q=0, T=0)
     S_gen = 0
     if Q != 0
-        S_gen = (State_out.s - State_in.s) + (Q/T)
+        S_gen = m_dot*(State_out.s - State_in.s) + (Q/T)
     else
-        S_gen = State_out.s - State_in.s
+        S_gen = m_dot*(State_out.s - State_in.s)
     end
 
     return S_gen

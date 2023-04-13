@@ -58,7 +58,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     S_condensor = m_dot_1 * S_gen(State_3, State_2, Q=Q_H, T=T_H)
     S_evaporator = m_dot_1 * S_gen(State_1_Prime, State_4, Q=-Q_L, T=T_L)
 
-    S_gen_total = S_condensor - S_evaporator # sign change
+    S_gen_total = S_condensor + S_evaporator 
 
     println("+===================================+")
     println("Condensor: ", S_condensor)
@@ -104,7 +104,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     S_evaporator = m_dot_1 * S_gen(State_1_prime, State_6, Q=-Q_L, T=T_L)
     S_mixer = ((m_dot_1 + m_dot_9) * State_4.s) - (m_dot_9 * State_9.s) - (m_dot_1 * State_1.s)
 
-    S_gen_total = S_throttle + S_condensor - S_evaporator + S_mixer # made a sign change
+    S_gen_total = S_throttle + S_condensor + S_evaporator + S_mixer
 
     println("+===================================+")
     println("Throttle: ", S_throttle)

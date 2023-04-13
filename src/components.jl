@@ -62,12 +62,13 @@ function nozzle(State_in_9, State_in_1, Gas, P)
 end
 
 
-function diffuser(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix)
+function diffuser(h_9, h_1, h_vec, Gas_Mix, Gas_Diff, P_mix)
 
-    P, X, h, s_4, search_index, V = Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Diff, P_mix);
+    P, X, h_4, s_4, search_index, V = Quality_Search(h_9, h_1, h_vec, Gas_Mix, Gas_Diff, P_mix);
     
     T = Gas_Diff["Temperature (K)"][search_index];
 
+    h = h_4
     s = s_4
 
     return State(T, P, h, s, X), V
@@ -174,13 +175,14 @@ function condensor(State_in, Gas, T_cond)
     T = T_cond
     X = 0
 
-    search_index = 1
+    search_index = 1;
+    """
     for i ∈ eachindex(Gas["Pressure (MPa)"])
         if Gas["Pressure (MPa)"][i] == P
             search_index = i
         end
     end
-
+    """
     s = 0
     h = 0
 
@@ -230,7 +232,7 @@ function Diffuser_Enthalpy(x, v_2i, v_2o, h)
     v_3 = (1-x)*v_2i + (x)*v_2o
     h_3 = (1-x)*(h_2i + 0.5*(v_2i^2)) + (x)*(h_2o + 0.5*(v_2o^2)) - 0.5*v_3^2 
     h_4 = h_3 + 0.5*(v_3^2)
-    
+
     return h_4, h_3
 end
 
@@ -272,7 +274,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     v_2_i = sqrt(2000*(h_9 - h_2i))
     v_2_o = sqrt(2000*(h_1 - h_2o))
    
-    h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.01)
+    h_f, h_v, s_f, s_v = Sat_State(P_mix, Gas_Mix, 0.001)
 
     # Diffuser
 
@@ -295,8 +297,9 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
         ϵ_2 = 0.001
 
         h_4, h_3 = Diffuser_Enthalpy(x[i], v_2i, v_2o, h)
-    
+
         X_mix = (h_3 - h_f)/(h_v - h_f)
+
         s_4 = s_f + X_mix * (s_v - s_f)
     
         
@@ -312,31 +315,23 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
 
-            #println(abs(x_ver1 - x_ver2), " ", ϵ_1, " ", abs(x[i] + x_ver1 - 1), " ", ϵ_2)
-
             if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
                 #println("Condition met")
                 x_out = x_ver1;
                 search_index = j;
-                #println(search_index)
-                break
+                
+                P = Gas_Dif["Pressure (MPa)"][search_index]
+                return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o]
             end
 
         end
     end
-
-    P = Gas_Dif["Pressure (MPa)"][search_index]
-
-    return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o]
 end
 
 
 function mass_flow_rate_1(Q_L, State_in, State_out)
     h_in = State_in.h
     h_out = State_out.h
-
-    println("h_in: ", h_in)
-    println("h_out: ", h_out)
 
     return Q_L/(h_out - h_in)
 end

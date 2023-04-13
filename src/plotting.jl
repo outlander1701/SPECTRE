@@ -45,7 +45,7 @@ function CoP_vs_pmix(cycle_func_1,cycle_func_2,cycle_func_3, State_1,  State_9, 
         Ψ = Array{Float64, 1}(undef, N)
 
         for j ∈ 1:N
-            m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j] = cycle_func_1(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
+            m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], = cycle_func_1(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
         end
         name = Gasses[i]["name"]
         scatter!(1000 .*P, CoP, label=latexstring("$name"))
@@ -83,11 +83,11 @@ function V_vs_pmix(cycle_func, State_1, State_9, Gasses, P, Q_L, T_L, T_H)
             m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], V_1[j], V_2[j] = cycle_func(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
         end
         name = Gasses[i]["name"]
-        scatter!(1000 .*P, 1000 .*V_1, label=latexstring("P_{4}"))
-        #scatter!(1000 .*P, V_2, label=latexstring("V_{in}"))
+        scatter!(1000 .*P, V_1, label = false)
+        #scatter!(1000 .*P, 1000 .*V_2, label=latexstring("V_{in}"))
     end
 
     xlabel!("Mixing Pressure [kPa]")
-    ylabel!("Pressure [kPa]")
+    ylabel!("Velocity Difference [m/s]")
 
 end

@@ -27,24 +27,23 @@ function quality(Gas, P; h::Float64=-1.0, s::Float64=-1.0)
     return X
 end
 
-
+# Was able to use a lower tolerance: 0.0005 instead of 0.001
 function nozzle(State_in_9, State_in_1, Gas, P)
     s_i = State_in_9.s
     s_o = State_in_1.s
-    #P = P_mix
 
     N = length(Gas["Pressure (MPa)"]) + 1
 
     search_index = -42
     for i ∈ 1:N
-        #println(Gas["Pressure (MPa)"][i], " ", P, " ", abs(Gas["Pressure (MPa)"][i] - P))
-        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.001) # R-134a tol = 0.001
+        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.0005) # R-134a tol = 0.001
             search_index = i;
             break
         elseif (i == N)
             return println("Error: Value not found")
         end
     end
+
     s_f = Gas["Entropy (l, J/g*K)"][search_index];
     s_v = Gas["Entropy (v, J/g*K)"][search_index];
     h_f = Gas["Enthalpy (l, kJ/kg)"][search_index];
@@ -53,10 +52,17 @@ function nozzle(State_in_9, State_in_1, Gas, P)
     X_i = (s_i - s_f)/(s_v - s_f)
     X_o = (s_o - s_f)/(s_v - s_f)
 
-    
-
     h_i = h_f + X_i*(h_v - h_f)
     h_o = h_f + X_o*(h_v - h_f)
+
+    println("\n+========================================+")
+    println("     The Great Nozzle Debug (No Issue)      ")
+    println("Search Index: ", search_index)
+    println("P_mix: ", P)
+    println("P found: ", Gas["Pressure (MPa)"][search_index])
+    println("X inner: ", X_i)
+    println("X outer: ", X_o)
+    println("+========================================+\n")
 
     return [h_i, h_o]
 end
@@ -241,10 +247,9 @@ function Sat_State(P, Gas, ϵ)
 
     N = length(Gas["Pressure (MPa)"]) + 1
 
-    search_index = 1
+    search_index = -42
     for k ∈ 1:N
 
-        
         if (abs(Gas["Pressure (MPa)"][k] - P) < ϵ)
             search_index = k;
             break
@@ -257,6 +262,13 @@ function Sat_State(P, Gas, ϵ)
     h_v = Gas["Enthalpy (v, kJ/kg)"][search_index];
     s_f = Gas["Entropy (l, J/g*K)"][search_index];
     s_v = Gas["Entropy (v, J/g*K)"][search_index];
+
+    println("+========================================+")
+    println("    The Great Sat State Debug (No Issue)    ")
+    println("Search Index: ", search_index)
+    println("Pressure Input: ", P)
+    println("Pressure Found: ", Gas["Pressure (MPa)"][search_index])
+    println("+========================================+\n")
 
     return h_f, h_v, s_f, s_v
 end
@@ -313,11 +325,25 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
 
             if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
-                #println("Condition met")
                 x_out = x_ver1;
                 search_index = j;
 
                 P = Gas_Dif["Pressure (MPa)"][search_index]
+
+                println("+========================================+")
+                println("     The Great Quality_Search Debug       ")
+                println("Search Index: ", search_index)
+                println("Velocitiy In: ", v_2_i)
+                println("Velocitiy Out: ", v_2_o)
+                println("Quality (h): ", x_ver1)
+                println("Quality (s): ", x_ver2)
+                println("Quality (found): ", 1-x[i])
+                println("Quality (mix): ", X_mix)
+                println("Pressure Found: ", P)
+                println("Pressure Mixer: ", P_mix)
+                println("+========================================+\n")
+
+
                 return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o, sqrt(1000)*v_3]
             end
 

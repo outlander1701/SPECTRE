@@ -24,5 +24,5 @@ CO2_Dif = CSV.File("GasData/CO2/CO2_Sat_Data.csv")
 
 CO2 = Dict("Comp" => CO2_Comp, "Cond" => CO2_Cond, "Throttle" => CO2_Throttle, "Evap" => CO2_Evap, "Mix" => CO2_Mix, "Dif" => CO2_Dif, "name" => "CO_{2}")
 
-Gasses = [R134a]
+Gasses = [CO2]
 

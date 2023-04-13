@@ -45,7 +45,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_1_Prime = evaporator(State_4, Gas["Evap"]);
 
     state_vec = [State_1, State_2, State_3, State_4, State_1_Prime]
-    print_table(state_vec)
+    #print_table(state_vec)
     #println("Enthalpy check: ", State_1.h, " ", State_1_Prime.h) #Enthalpies are consistent
 
     m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_Prime)
@@ -53,15 +53,24 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     CoP = COP(Q_L, work)
     Q_H = Q_out(State_2, State_3, m_dot_1)
 
+    println("Consv Energy: ", work + Q_L - Q_H, " ", work, " ", Q_L, " ", -Q_H)
+
     S_condensor = m_dot_1 * S_gen(State_3, State_2, Q=Q_H, T=T_H)
     S_evaporator = m_dot_1 * S_gen(State_1_Prime, State_4, Q=-Q_L, T=T_L)
 
-    S_gen_total = S_condensor + S_evaporator
+    S_gen_total = S_condensor - S_evaporator # sign change
+
+    println("+===================================+")
+    println("Condensor: ", S_condensor)
+    println("Evaporator: ", S_evaporator)
+    println("Total: ", S_gen_total)
+    println("+===================================+")
     
     Ψ = T_H * S_gen_total
     
     return m_dot_1, work, CoP, Ψ, state_vec
 end
+
 
 function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     
@@ -88,12 +97,22 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     CoP = COP(Q_L, work)
     Q_H = Q_out(State_8, State_9_prime, m_dot_9)
 
+    println("Throttle Entropy: ", State_5.s, " ", State_6.s)
+    println("Throttle Enthalpy: ", State_5.h, " ", State_6.h)
     S_throttle = m_dot_1 * S_gen(State_6, State_5)
     S_condensor = m_dot_9 * S_gen(State_9_prime, State_8, Q=Q_H, T=T_H)
     S_evaporator = m_dot_1 * S_gen(State_1_prime, State_6, Q=-Q_L, T=T_L)
     S_mixer = ((m_dot_1 + m_dot_9) * State_4.s) - (m_dot_9 * State_9.s) - (m_dot_1 * State_1.s)
 
-    S_gen_total = S_throttle + S_condensor + S_evaporator + S_mixer
+    S_gen_total = S_throttle + S_condensor - S_evaporator + S_mixer # made a sign change
+
+    println("+===================================+")
+    println("Throttle: ", S_throttle)
+    println("Condensor: ", S_condensor)
+    println("Evaporator: ", S_evaporator)
+    println("Mixer: ", S_mixer)
+    println("Total: ", S_gen_total)
+    println("+===================================+")
 
     
     Ψ = T_H * S_gen_total
@@ -102,7 +121,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     V_2 = State_4.P
     #println("Velocity: ", V[2], " ", V[1])
 
-    return m_dot_1, m_dot_9, work, CoP, Ψ #, V_1, V_2
+    return m_dot_1, m_dot_9, work, CoP, Ψ, V_1, V_2
 end
 
 function print_table(state_vec)

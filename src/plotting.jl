@@ -73,18 +73,18 @@ function V_vs_pmix(cycle_func, State_1, State_9, Gasses, P, Q_L, T_L, T_H)
         m_dot_1 = Array{Float64, 1}(undef, N)
         m_dot_9 = Array{Float64, 1}(undef, N)
         Ψ = Array{Float64, 1}(undef, N)
-        V_1 = Array{Float64, 1}(undef, N)
-        V_2 = Array{Float64, 1}(undef, N)
-        V_3 = Array{Float64, 1}(undef, N)
+        #V_1 = Array{Float64, 1}(undef, N)
+        #V_2 = Array{Float64, 1}(undef, N)
+        #V_3 = Array{Float64, 1}(undef, N)
 
 
         for j ∈ 1:N
-            m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], V_1[j], V_2[j], V_3[j] = cycle_func(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
+            m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j]= cycle_func(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H) #m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], V_1[j], V_2[j], V_3[j]
         end
         name = Gasses[i]["name"]
-        scatter!(1000 .*P, V_1, label=latexstring("V_{2,i}"), markersize = 3)
-        scatter!(1000 .*P, V_2, label=latexstring("V_{2,o}"), markersize = 3)
-        scatter!(1000 .*P, V_3, label=latexstring("V_{3}"), markersize = 3)
+        scatter!(1000 .*P, Ψ, label=name)
+        #scatter!(1000 .*P, V_2, label=latexstring("V_{2,o}"), markersize = 3)
+        #scatter!(1000 .*P, V_3, label=latexstring("V_{3}"), markersize = 3)
 
         #scatter!(1000 .*P, 1000 .*V_2, label=latexstring("V_{in}"))
     end

@@ -290,8 +290,6 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
     N = length(x)
     
     for i ∈ 1:N
-        # R-134a: ϵ = 0.001
-        # CO2: ϵ = 0.01
 
         ϵ_1 = 0.001
         ϵ_2 = 0.001
@@ -302,7 +300,6 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
 
         s_4 = s_f + X_mix * (s_v - s_f)
     
-        
         M = length(Gas_Dif["Pressure (MPa)"])
     
         for j ∈ 1:1:M
@@ -319,7 +316,7 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
                 #println("Condition met")
                 x_out = x_ver1;
                 search_index = j;
-                
+
                 P = Gas_Dif["Pressure (MPa)"][search_index]
                 return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o]
             end

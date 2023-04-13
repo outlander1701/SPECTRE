@@ -10,7 +10,6 @@ function work_in_net_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L, T
 
     for i ∈ 1:M
         w_in_net = Array{Float64, 1}(undef, N)
-        
         CoP = Array{Float64, 1}(undef, N)
         m_dot_1 = Array{Float64, 1}(undef, N)
         m_dot_9 = Array{Float64, 1}(undef, N)
@@ -24,7 +23,6 @@ function work_in_net_vs_pmix(cycle_func, State_1, State_9, Gasses, P_mix, Q_L, T
         scatter!(1000 .*P_mix, w_in_net, label=latexstring("$name"))
 
     end
-
     xlabel!("Mixing Pressure [kPa]")
     ylabel!("Work In [kJ]")
 
@@ -83,7 +81,7 @@ function V_vs_pmix(cycle_func, State_1, State_9, Gasses, P, Q_L, T_L, T_H)
             m_dot_1[j], m_dot_9[j], w_in_net[j], CoP[j], Ψ[j], V_1[j], V_2[j] = cycle_func(State_1, State_9, Gasses[i], P[j], Q_L, T_L, T_H)
         end
         name = Gasses[i]["name"]
-        scatter!(1000 .*P, V_1, label = false)
+        scatter!(1000 .*P, V_2, label = false)
         #scatter!(1000 .*P, 1000 .*V_2, label=latexstring("V_{in}"))
     end
 

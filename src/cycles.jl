@@ -13,7 +13,7 @@ function Simple_Throttle(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_1_prime = evaporator(State_4, Gas["Evap"]);
 
     state_vec = [State_1, State_2, State_3, State_4, State_1_prime]
-    print_table(state_vec)
+    #print_table(state_vec)
 
 
     m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_prime)
@@ -48,7 +48,7 @@ function Simple_Turbine(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     State_1_Prime = evaporator(State_4, Gas["Evap"]);
 
     state_vec = [State_1, State_2, State_3, State_4, State_1_Prime]
-    print_table(state_vec)
+    #print_table(state_vec)
     #println("Enthalpy check: ", State_1.h, " ", State_1_Prime.h) #Enthalpies are consistent
 
     m_dot_1 = mass_flow_rate_1(Q_L, State_4, State_1_Prime)
@@ -89,7 +89,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     #println("State 4: ", State_4.P, " ", State_4.T, " ", State_4.h, " ", State_4.s, " ", State_4.X)
     
     state_vec = [State_1, State_4, State_5, State_6, State_7, State_8, State_9_prime, State_1_prime]
-    print_table(state_vec)
+    #print_table(state_vec)
     
     m_dot_1 = mass_flow_rate_1(Q_L, State_6, State_1_prime)
     m_dot_9 = mass_flow_rate_9(m_dot_1, State_4)
@@ -97,25 +97,26 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     CoP = COP(Q_L, work)
     Q_H = Q_out(State_8, State_9_prime, m_dot_9)
 
+    """
     println("+========================================+")
     println("     The Great Component Debug         ")
-    println("\nNozzle")
+    println("Nozzle")
     println("e_in: ", m_dot_1*State_1.h + m_dot_9*State_9.h); e_in = m_dot_1*State_1.h + m_dot_9*State_9.h
     println("e_out: ", m_dot_9*(State_2[1] + (1/2000)*V[1]^2) + m_dot_1*(State_2[2] + (1/2000)*V[2]^2)); e_out = m_dot_9*(State_2[1] + (1/2000)*V[1]^2) + m_dot_1*(State_2[2] + (1/2000)*V[2]^2)
     println("delta e: ", e_in - e_out)
     println("Relative %: ", 100 * (e_in - e_out) / (0.5 * (e_in + e_out)))
     println("+========================================+")
+    """
 
     S_throttle = S_gen(m_dot_1, State_6, State_5)
     S_condensor = S_gen(m_dot_9, State_9_prime, State_8, Q=Q_H, T=T_H)
     S_evaporator = S_gen(m_dot_1, State_1_prime, State_6, Q=-Q_L, T=T_L)
-
     S_mixer = ((m_dot_1 + m_dot_9) * State_4.s) - (m_dot_9 * State_9.s + m_dot_1 * State_1.s) # therefore, issue is in the entropy of 
 
     S_gen_total = S_throttle + S_condensor + S_evaporator + S_mixer
     #S_gen_total = S_throttle + S_mixer
 
-    sgen_vec = T_H .*[S_gen_total, S_evaporator,S_condensor, S_throttle,  S_mixer]
+    sgen_vec = T_H .*[S_gen_total, S_evaporator, S_condensor, S_throttle,  S_mixer]
     #print_sgen(sgen_vec)
 
     
@@ -125,6 +126,7 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     V_2 = V[2]
     V_3 = V[3]
    
+    """
     println("+========================================+")
     println("     The Great Consveration Debug         ")
     println("m_dot_1: ", m_dot_1)
@@ -133,34 +135,34 @@ function SPECTRE(State_1, State_9, Gas, P_mix, Q_L, T_L, T_H)
     println("v_2,i: ", V_1)
     println("v_2,o: ", V_2)
     println("v_3: ", V_3)
-    println("\nMomentum Conservation")
+    println("Momentum Conservation")
     println("p_in: ", m_dot_1*V_2 + m_dot_9*V_1); p_in = m_dot_1*V_2 + m_dot_9*V_1
     println("p_out: ", (m_dot_1 + m_dot_9)*V_3); p_out = (m_dot_1 + m_dot_9)*V_3
     println("delta p: ", p_in - p_out)
     println("Relative %: ", -100 * (p_in - p_out)/(0.5 * (p_out + p_in)))
-    println("\nEnergy Conservation (1,9) -> 4")
+    println("Energy Conservation (1,9) -> 4")
     println("e_in: ", m_dot_1*State_1.h + m_dot_9*State_9.h); e_in = m_dot_1*State_1.h + m_dot_9*State_9.h
     println("e_out: ", (m_dot_1 + m_dot_9)*State_4.h); e_out = (m_dot_1 + m_dot_9)*State_4.h
     println("delta e: ", e_in - e_out)
     println("Relative %: ", 100 * (e_in - e_out) / (0.5 * (e_in + e_out)))
-    println("\nEnergy Conservation (Full Cycle)")
+    println("Energy Conservation (Full Cycle)")
     println("e_in: ", Q_L + work); e_in = Q_L + work
     println("e_out: ", Q_H); e_out = Q_H
     println("delta e: ", e_in - e_out)
     println("Relative %: ", 100 * (e_in - e_out) / (0.5 * (e_in + e_out)))
-    println("\nSecond Law Verification (1,9) -> 4")
+    println("Second Law Verification (1,9) -> 4")
     println("s_in: ", m_dot_1*State_1.s + m_dot_9*State_9.s); s_in = m_dot_1*State_1.s + m_dot_9*State_9.s
     println("s_out: ", (m_dot_1 + m_dot_9)*State_4.s); s_out = (m_dot_1 + m_dot_9)*State_4.s
     println("s_gen: ", s_out - s_in)
     println("Relative %: ", 100 * (s_out - s_in) / (0.5 * (s_in + s_out)))
-    println("\nSecond Law Verification (Full Cycle)")
+    println("Second Law Verification (Full Cycle)")
     println("s_in: ", Q_L / T_H); s_in = Q_L / T_H
     println("s_out: ", Q_H / T_H); s_out = Q_H / T_H
     println("s_gen: ", s_out - s_in)
     println("Valid s_gen: ", (s_out - s_in) > 0)
     println("+========================================+\n")
-
-    return m_dot_1, m_dot_9, work, CoP, Ψ, state_vec #, V_1, V_2, V_3
+    """
+    return m_dot_1, m_dot_9, work, CoP, Ψ, V_1, V_2, V_3
 end
 
 function print_table(state_vec)
@@ -175,7 +177,7 @@ function print_table(state_vec)
 end
 function print_sgen(sgen_vec)
 
-    name = ["Ψ_gen_total", "Ψ_evaporator", "Ψ_mixer", "Ψ_throttle", "Ψ_condensor"]
+    name = ["Ψ_gen_total", "Ψ_evaporator","Ψ_condensor", "Ψ_throttle", "Ψ_mixer"]
     println("+===================================+")
     println("             Exergy")
     counter = 1

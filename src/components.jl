@@ -55,15 +55,16 @@ function nozzle(State_in_9, State_in_1, Gas, P)
     h_i = h_f + X_i*(h_v - h_f)
     h_o = h_f + X_o*(h_v - h_f)
 
-    println("\n+========================================+")
+    """
+    println("+========================================+")
     println("     The Great Nozzle Debug (No Issue)      ")
     println("Search Index: ", search_index)
     println("P_mix: ", P)
     println("P found: ", Gas["Pressure (MPa)"][search_index])
     println("X inner: ", X_i)
     println("X outer: ", X_o)
-    println("+========================================+\n")
-
+    println("+========================================+")
+    """
     return [h_i, h_o]
 end
 
@@ -263,12 +264,14 @@ function Sat_State(P, Gas, ϵ)
     s_f = Gas["Entropy (l, J/g*K)"][search_index];
     s_v = Gas["Entropy (v, J/g*K)"][search_index];
 
+    """
     println("+========================================+")
     println("    The Great Sat State Debug (No Issue)    ")
     println("Search Index: ", search_index)
     println("Pressure Input: ", P)
     println("Pressure Found: ", Gas["Pressure (MPa)"][search_index])
     println("+========================================+\n")
+    """
 
     return h_f, h_v, s_f, s_v
 end
@@ -325,12 +328,12 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
             x_ver_avg = .5*(x_ver1 + x_ver2)
 
-            if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver_avg - 1) < ϵ_2)
+            if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
                 x_out = x_ver_avg;
                 search_index = j;
 
                 P = Gas_Dif["Pressure (MPa)"][search_index]
-
+                """
                 println("+========================================+")
                 println("     The Great Quality_Search Debug       ")
                 println("Search Index: ", search_index)
@@ -342,8 +345,8 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
                 println("Quality (mix): ", X_mix)
                 println("Pressure Found: ", P)
                 println("Pressure Mixer: ", P_mix)
-                println("+========================================+\n")
-
+                println("+========================================+")
+                """
 
                 return P, x_out, h_4, s_4, search_index, [v_2_i, v_2_o, sqrt(1000)*v_3]
             end

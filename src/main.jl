@@ -9,7 +9,7 @@ include("./plotting.jl")
 
 ###############################################################################
 # Questions for Shibahzi                                                      #
-# - Data (304K vs 308K) (Supercritical, Transcritical, or under sat envelop?)  #
+# - Data (304K vs 308K) (Supercritical, Transcritical, or under sat envelop?) #
 # - Plots look right?                                                         #
 # - COP too high?                                                             #
 # - Do we need more Pmix data?                                                #
@@ -39,17 +39,16 @@ P_mix = 0.10;
 
 
 P_cond = 7.3783; # MPa
-T_cond = 304.0 # 308.00; # K | prev: 304.00
-h_cond = 309.43 #402.59; # kJ/kg | prev: 309.43	
-s_cond = 1.3586 #1.6643; # kJ/kgK | 1.3586
+T_cond = 304.00; #308.00; # K | prev: 304.00
+h_cond = 309.43; #402.59; # kJ/kg | prev: 309.43	
+s_cond = 1.3586; #1.6643; # kJ/kgK | 1.3586
 
 T_evap = 248.0 # K Need to look at this value
 P_evap = 1.7297 # MPa this is just for R-134a
 h_evap = 437.05 # kJ/kg
 s_evap = 1.9739 # kJ/kgK
-#P_mix = 0.5179:0.01:1.675;
-P_mix = 0.52
-
+P_mix = 0.5179:0.01:1.675;
+#P_mix = 1.675
 
 State_1 = State(T_evap, P_evap, h_evap, s_evap, 1.0)
 State_9 = State(T_cond, P_cond, h_cond, s_cond, 0.0)
@@ -65,7 +64,7 @@ println(" ")
 """
 
 
-m_dot_1, m_dot_9, work, CoP, Ψ, state_vec = SPECTRE(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
+#m_dot_1, m_dot_9, work, CoP, Ψ, state_vec = SPECTRE(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ = Simple_Throttle(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #println("CoP: ", CoP)
@@ -75,8 +74,8 @@ println("Finished\n\n")
 
 #work_in_net_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 #CoP_vs_pmix(SPECTRE, Simple_Turbine, Simple_Throttle,  State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
-#V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
-
+V_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
+#exergy_destroyed_vs_pmix(SPECTRE, State_1, State_9, Gasses, P_mix, Q_L, T_L, T_H)
 
 #s_vec = [state_vec[i].s for i ∈ eachindex(state_vec)]
 #T_vec = [state_vec[i].T for i ∈ eachindex(state_vec)]

@@ -36,7 +36,7 @@ function nozzle(State_in_9, State_in_1, Gas, P)
 
     search_index = -42
     for i ∈ 1:N
-        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.0005) # R-134a tol = 0.001
+        if (abs(Gas["Pressure (MPa)"][i] - P) < 0.001) # R-134a tol = 0.001
             search_index = i;
             break
         elseif (i == N)
@@ -323,9 +323,10 @@ function Quality_Search(h_9, h_1, h, Gas_Mix, Gas_Dif, P_mix)
             
             x_ver1 = (h_4 - h_f_i)/(h_v_i - h_f_i);
             x_ver2 = (s_4 - s_f_i)/(s_v_i - s_f_i);
+            x_ver_avg = .5*(x_ver1 + x_ver2)
 
-            if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver1 - 1) < ϵ_2)
-                x_out = x_ver1;
+            if (abs(x_ver1 - x_ver2) < ϵ_1) && (abs(x[i] + x_ver_avg - 1) < ϵ_2)
+                x_out = x_ver_avg;
                 search_index = j;
 
                 P = Gas_Dif["Pressure (MPa)"][search_index]

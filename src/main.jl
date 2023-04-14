@@ -7,6 +7,15 @@ include("./components.jl")
 include("./cycles.jl")
 include("./plotting.jl")
 
+###############################################################################
+# Questions for Shibahzi                                                      #
+# - Data (304K vs 308K) (Supercritical, Transcritical, or under sat envelop?)  #
+# - Plots look right?                                                         #
+# - COP too high?                                                             #
+# - Do we need more Pmix data?                                                #
+# - Why is turbine lower than SPECTRE?                                        #
+###############################################################################
+
 # Constants
 T_L = 258.0 # K
 T_H = 298.0 # K
@@ -59,6 +68,8 @@ println(" ")
 m_dot_1, m_dot_9, work, CoP, Ψ, state_vec = SPECTRE(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ = Simple_Throttle(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
 #m_dot_1, work, CoP, Ψ, state_vec = Simple_Turbine(State_1, State_9, Gasses[1], P_mix, Q_L, T_L, T_H)
+#println("CoP: ", CoP)
+
 
 println("Finished\n\n")
 
